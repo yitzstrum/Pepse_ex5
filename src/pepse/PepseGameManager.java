@@ -6,6 +6,8 @@ import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
+import pepse.world.Sky;
+import pepse.world.Terrain;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
@@ -19,6 +21,8 @@ public class PepseGameManager extends GameManager {
     private static final int SKY_LAYER = Layer.BACKGROUND;
     private static final int SUN_LAYER = SKY_LAYER + 1;
     private static final int HALO_LAYER = SUN_LAYER + 1;
+    private static final int SEED = 200;
+
 
     private static final int GROUND_LAYER = Layer.STATIC_OBJECTS;
     private static final int TRUNKS_LAYER = GROUND_LAYER + 1;
@@ -37,6 +41,8 @@ public class PepseGameManager extends GameManager {
         GameObject sun = Sun.create(gameObjects(), SUN_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
         GameObject sunHalo = SunHalo.create(gameObjects(), HALO_LAYER, sun, HALO_COLOR);
         sunHalo.addComponent(deltaTime -> sunHalo.setCenter(sun.getCenter()));
+        Terrain terrain = new Terrain(gameObjects(), Layer.STATIC_OBJECTS, windowController.getWindowDimensions(), SEED);
+        terrain.createInRange(0, (int)(windowController.getWindowDimensions().x()));
 
 
     }
