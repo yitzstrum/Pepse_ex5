@@ -11,13 +11,27 @@ import danogl.util.Vector2;
 import java.awt.*;
 
 
-public class Night {
+public class Night extends GameObject {
 
     private static final Color NIGHT_COLOR = Color.BLACK;
     private static final String NIGHT_TAG = "night";
      private static final float MIDNIGHT_OPACITY = 0.5f;
 
      private static final float HALF_DAY = 2;
+
+    /**
+     * Construct a new GameObject instance.
+     *
+     * @param topLeftCorner Position of the object, in window coordinates (pixels).
+     *                      Note that (0,0) is the top-left corner of the window.
+     * @param dimensions    Width and height in window coordinates.
+     * @param renderable    The renderable representing the object. Can be null, in which case
+     *                      the GameObject will not be rendered.
+     */
+    public Night(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable) {
+        super(topLeftCorner, dimensions, renderable);
+    }
+
     public static GameObject create(GameObjectCollection gameObjects, int layer, Vector2 windowDimensions,
             float cycleLength) {
 
