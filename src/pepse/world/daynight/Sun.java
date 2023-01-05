@@ -11,12 +11,25 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
-public class Sun {
+public class Sun extends GameObject {
 
     private static final Color SUN_COLOR = Color.YELLOW;
     private static final String SUN_TAG = "sun";
     private static final float SUN_SIZE = 100f;
     private static final Vector2 SUN_DIMENSION = new Vector2(SUN_SIZE, SUN_SIZE);
+
+    /**
+     * Construct a new GameObject instance.
+     *
+     * @param topLeftCorner Position of the object, in window coordinates (pixels).
+     *                      Note that (0,0) is the top-left corner of the window.
+     * @param dimensions    Width and height in window coordinates.
+     * @param renderable    The renderable representing the object. Can be null, in which case
+     *                      the GameObject will not be rendered.
+     */
+    public Sun(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable) {
+        super(topLeftCorner, dimensions, renderable);
+    }
 
 
     /**

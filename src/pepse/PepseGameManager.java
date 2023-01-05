@@ -1,5 +1,6 @@
 package pepse;
 import danogl.GameManager;
+import danogl.GameObject;
 import danogl.collisions.Layer;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
@@ -7,8 +8,13 @@ import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
+import pepse.world.daynight.SunHalo;
+
+import java.awt.*;
 
 public class PepseGameManager extends GameManager {
+
+    private static final Color HALO_COLOR = new Color(255, 255, 0, 20);
 
     private static final int SKY_LAYER = Layer.BACKGROUND;
     private static final int SUN_LAYER = SKY_LAYER + 1;
@@ -20,11 +26,19 @@ public class PepseGameManager extends GameManager {
     private static final int GROUND_GAME_OBJECTS_LAYER = LEAFS_LAYER + 1;
     private static final int NIGHT_LAYER = GROUND_GAME_OBJECTS_LAYER + 1;
 
+
+    private static final int CYCLE_LENGTH = 30;
+
     @Override
     public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
-        Night.create(gameObjects(), Layer.FOREGROUND, windowController.getWindowDimensions(), 5);
-        Sun.create(gameObjects(), Layer.BACKGROUND, windowController.getWindowDimensions(), 5);
+
+        Night.create(gameObjects(), NIGHT_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
+        GameObject sun = Sun.create(gameObjects(), SUN_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
+        GameObject sunHalo = SunHalo.create(gameObjects(), HALO_LAYER, sun, HALO_COLOR);
+        sunHalo.addComponent(deltaTime -> sunHalo.setCenter(sun.getCenter()));
+
+
     }
 
     public static void main(String[] args) {
