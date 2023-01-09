@@ -169,8 +169,11 @@ public class Avatar extends GameObject {
                 rendersHandler(flyRenderables);
 
         }
+    }
 
 
+    public int getAvatarPos() {
+        return (int) (getTopLeftCorner().x() / Block.SIZE);
     }
 
     private Renderable[] loadRennderAssets(String path, int numOfImg) {
