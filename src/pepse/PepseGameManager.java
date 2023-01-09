@@ -6,6 +6,7 @@ import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
+import danogl.gui.rendering.Camera;
 import danogl.util.Vector2;
 import pepse.world.Avatar;
 import pepse.world.Sky;
@@ -36,6 +37,8 @@ public class PepseGameManager extends GameManager {
 
     private static final int CYCLE_LENGTH = 30;
 
+    private Avatar avatar;
+
     @Override
     public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
@@ -46,16 +49,31 @@ public class PepseGameManager extends GameManager {
         sunHalo.addComponent(deltaTime -> sunHalo.setCenter(sun.getCenter()));
         Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
         Terrain terrain = new Terrain(gameObjects(), Layer.STATIC_OBJECTS, windowController.getWindowDimensions(), SEED);
-        terrain.createInRange(0, (int)(windowController.getWindowDimensions().x()));
+        terrain.createInRange(0, (int) (windowController.getWindowDimensions().x()));
         Tree tree = new Tree(gameObjects(), TRUNKS_LAYER, windowController.getWindowDimensions(), terrain::groundHeightAt, SEED);
-        tree.createInRange(0, (int)(windowController.getWindowDimensions().x()));
+        tree.createInRange(0, (int) (windowController.getWindowDimensions().x()));
+
+        Vector2 initLocation = new Vector2(windowController.getWindowDimensions().x() / 2,
+                terrain.groundHeightAt(windowController.getWindowDimensions().x() / 2) - 300);
 
 
-        Avatar avatar = Avatar.create(gameObjects(), Layer.DEFAULT,
-                new Vector2(windowController.getWindowDimensions().x() / 2,
-                        terrain.groundHeightAt(windowController.getWindowDimensions().x() / 2)
-                                - 300),
+        avatar = Avatar.create(gameObjects(), Layer.DEFAULT,
+                initLocation,
                 inputListener, imageReader);
+
+        Vector2 deltaRelative = new Vector2(windowController.getWindowDimensions().mult(0.5f).subtract(initLocation));
+        setCamera(new Camera(avatar, deltaRelative,
+                windowController.getWindowDimensions(),
+                windowController.getWindowDimensions()));
+
+
+    }
+
+    @Override
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+        System.out.println(avatar.getAvatarPos());
+
 
     }
 
