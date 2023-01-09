@@ -17,6 +17,7 @@ public class    Tree {
     private static final Color STEM_COLOR = new Color(100, 50, 20);
     private static final Color LEAF_COLOR = new Color(50, 200, 30);
     private static final String STEM_TAG = "stem";
+    private static final String LEAF_TAG = "leaf";
     private static final Renderable stemRenderable = new RectangleRenderable(ColorSupplier.approximateColor(STEM_COLOR));
     private static final Renderable leafRenderable = new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR));
     private static final int RANDOM_RANGE = 10;
@@ -98,6 +99,7 @@ public class    Tree {
 
     private void createLeaf(int x, int y){
         GameObject leaf = new Leaf(new Vector2(x, y), new Vector2(Block.SIZE, Block.SIZE), leafRenderable);
+        leaf.setTag(LEAF_TAG);
         gameObjects.addGameObject(leaf, layer + 1);
     }
 }
