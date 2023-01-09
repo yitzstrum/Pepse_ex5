@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
-public class Tree {
+public class    Tree {
     private static final Color STEM_COLOR = new Color(100, 50, 20);
     private static final Color LEAF_COLOR = new Color(50, 200, 30);
     private static final String STEM_TAG = "stem";
