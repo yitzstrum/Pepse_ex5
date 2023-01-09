@@ -14,6 +14,8 @@ public class Leaf extends Block {
     private static final float DIMENSION_CHANGE = 10f;
     private static final float LEAF_RAND_PARAM = 8f;
     private static final int LEAF_WIND_RANGE = 400;
+    private static final int MAX_LEAF_LIFE = 20;
+
 
     private final Vector2 initialTopLeftCorner;
     private Vector2 dimensions;
@@ -82,7 +84,8 @@ public class Leaf extends Block {
     }
 
     private void deathScheduledTask(){
-
+        float leafLifeTime = (float) (Math.random() * MAX_LEAF_LIFE);
+        new ScheduledTask(this, leafLifeTime, false, null);
     }
 
 
