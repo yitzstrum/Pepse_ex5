@@ -16,16 +16,17 @@ public class Terrain {
     private static final float SCALE_RATIO = (float) (4.0 / 9.0);
     private static final String GROUND_TAG = "ground";
     private static final Color BASE_GROUND_COLOR = new Color(212, 123, 74);
-    private static final Renderable groundRenderable = new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR));
     private final NoiseGenerator noiseGenerator;
     private final GameObjectCollection gameObjects;
     private final int groundLayer;
+    private int upperGroundLayer;
     private float groundHeightAtX0;
     private float scalingParameter;
 
-    public Terrain(GameObjectCollection gameObjects, int groundLayer, Vector2 windowDimensions, int seed){
+    public Terrain(GameObjectCollection gameObjects, int groundLayer, int upperGroundLayer, Vector2 windowDimensions, int seed){
         this.gameObjects = gameObjects;
         this.groundLayer = groundLayer;
+        this.upperGroundLayer = upperGroundLayer;
         groundHeightAtX0 = windowDimensions.y() * X0_HEIGHT_RATIO;
         noiseGenerator = new NoiseGenerator(seed);
         scalingParameter = windowDimensions.y() * SCALE_RATIO;
@@ -43,16 +44,20 @@ public class Terrain {
 
     private void createVerticalTerrain(int x){
         int y = (int) (Math.floor(groundHeightAt(x) / Block.SIZE) * Block.SIZE);
-        for (int i = 0; i < TERRAIN_DEPTH; i++){
-            createBlock(x, y);
+        createBlock(x, y, upperGroundLayer);
+        y += Block.SIZE;
+        for (int i = 1; i < TERRAIN_DEPTH; i++){
+            createBlock(x, y, groundLayer);
             y += Block.SIZE;
         }
     }
 
-    private void createBlock(int x, int y){
-        GameObject ground_object = new Block(new Vector2(x, y), groundRenderable);
+    private void createBlock(int x, int y, int layer){
+        GameObject ground_object = new Block(
+                new Vector2(x, y),
+                new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR)));
         ground_object.setTag(GROUND_TAG);
-        gameObjects.addGameObject(ground_object, groundLayer);
+        gameObjects.addGameObject(ground_object, layer);
     }
 
     private int roundMinX(int minX){
