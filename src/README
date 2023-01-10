@@ -58,8 +58,8 @@ Design Dilemmas:
 First I would like to mention the screen dimensions, when we ran the game in the aquarium computers the screen was cut
 off, therefore we decided to create a fixed size screen that looks nice on the aquarium computer screens.
 
-* The first dilemma we encountered was if the leaf's logic should be implemented in the Tree class or we should create a
-  different class for it, our decisions was to make a different class, The reason was that the Leaf has
+* The first dilemma we encountered was if the leaf's logic should be implemented in the Tree class or we should create
+  a different class for it, our decisions was to make a different class, The reason was that the Leaf has
   a lot of logic to it and we want to contain it in one location instead of having the leaf being a Block instance
   and then we would have to implement all of the logic in the Tree class.
 

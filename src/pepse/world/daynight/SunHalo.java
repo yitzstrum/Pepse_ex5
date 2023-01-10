@@ -42,7 +42,8 @@ public class SunHalo extends GameObject {
                                     Color color) {
 
         Renderable haloRenderable = new OvalRenderable(color);
-        GameObject haloObj = new GameObject(sun.getTopLeftCorner(), sun.getDimensions().mult(HALO_SIZE), haloRenderable);
+        GameObject haloObj = new GameObject(sun.getTopLeftCorner(), sun.getDimensions().mult(HALO_SIZE),
+                haloRenderable);
         haloObj.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         haloObj.setTag(HALO_TAG);
         gameObjects.addGameObject(haloObj, layer);

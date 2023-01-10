@@ -54,7 +54,8 @@ public class Sun extends GameObject {
         float x = (float) ((4 / 2) * Math.PI);
         new Transition<>(
                 subObj, // the game object being changed
-                (angle) ->  subObj.setCenter(getSunPos(windowDimensions, angle)), // the function that changes the game object
+                (angle) ->  subObj.setCenter(getSunPos(windowDimensions, angle)), // the function that changes
+                // the game object
                 0f, // initial transition value
                 x, // final transition value
                 Transition.LINEAR_INTERPOLATOR_FLOAT, // use a linear interpolator
@@ -71,8 +72,10 @@ public class Sun extends GameObject {
      * @return The sun position in  a vector form
      */
     private static Vector2 getSunPos(Vector2 windowDimensions, float angleInSky) {
-        float x = (float) ((windowDimensions.x() / 2) - (windowDimensions.y() - SUN_DIMENSION.y()) / 2 * 2 * Math.sin(angleInSky));
-        float y = (float) ((windowDimensions.y() / 2) - (windowDimensions.y() - SUN_DIMENSION.y()) / 2 * Math.cos(angleInSky));
+        float x = (float) ((windowDimensions.x() / 2) - (windowDimensions.y() - SUN_DIMENSION.y()) /
+                2 * 2 * Math.sin(angleInSky));
+        float y = (float) ((windowDimensions.y() / 2) - (windowDimensions.y() - SUN_DIMENSION.y()) /
+                2 * Math.cos(angleInSky));
         return new Vector2(x, y);
     }
 }
