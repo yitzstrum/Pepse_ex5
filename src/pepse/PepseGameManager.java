@@ -1,4 +1,5 @@
 package pepse;
+
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.collisions.Layer;
@@ -17,109 +18,204 @@ import pepse.world.daynight.SunHalo;
 import pepse.world.trees.Tree;
 
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * The PepseGameManager class which manages the Pepse game
+ */
 public class PepseGameManager extends GameManager {
-
     private static final Color HALO_COLOR = new Color(255, 255, 0, 20);
-
     private static final int SKY_LAYER = Layer.BACKGROUND;
     private static final int SUN_LAYER = SKY_LAYER + 1;
     private static final int HALO_LAYER = SUN_LAYER + 1;
     private static final int SEED = 200;
     private static final int GROUND_LAYER = Layer.STATIC_OBJECTS;
-    private static final int UPPER_GROUND_LAYER = GROUND_LAYER + 1 ;
+    private static final int UPPER_GROUND_LAYER = GROUND_LAYER + 1;
     private static final int STEMS_LAYER = UPPER_GROUND_LAYER + 1;
     private static final int LEAVES_LAYER = STEMS_LAYER + 1;
     private static final int GROUND_GAME_OBJECTS_LAYER = LEAVES_LAYER + 1;
     private static final int NIGHT_LAYER = GROUND_GAME_OBJECTS_LAYER + 1;
     private static final int CYCLE_LENGTH = 30;
     private static final String GROUND_TAG = "ground";
+    private static final String UPPER_GROUND_TAG = "upper ground";
     private static final String STEM_TAG = "stem";
     private static final String LEAF_TAG = "leaf";
+
     private float avatarXCoord;
-    private float leftEdge;
-    private float rightEdge;
+    private float leftScreenEdge;
+    private float rightScreenEdge;
     private Terrain terrain;
     private Tree tree;
-
     private Avatar avatar;
+    private WindowController windowController;
 
+    /**
+     * The initialize game function overrides the function from game manager and is in charge of initializing all of
+     * the game objects
+     *
+     * @param imageReader      Contains a single method: readImage, which reads an image from disk.
+     * @param soundReader      Contains a single method: readSound, which reads a wav file from disk.
+     * @param inputListener    Contains a single method: isKeyPressed,
+     *                         which returns whether a given key is currently pressed by the user or not.
+     * @param windowController Contains an array of helpful, self explanatory methods concerning the window.
+     */
     @Override
     public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
-        leftEdge = 0;
-        rightEdge = (float) (windowController.getWindowDimensions().x() * 1.1);
-        Night.create(gameObjects(), NIGHT_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
-        GameObject sun = Sun.create(gameObjects(), SUN_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
-        GameObject sunHalo = SunHalo.create(gameObjects(), HALO_LAYER, sun, HALO_COLOR);
-        sunHalo.addComponent(deltaTime -> sunHalo.setCenter(sun.getCenter()));
-        Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
-        terrain = new Terrain(gameObjects(), GROUND_LAYER, UPPER_GROUND_LAYER, windowController.getWindowDimensions(), SEED);
-        terrain.createInRange((int) leftEdge, (int) rightEdge);
-        tree = new Tree(gameObjects(), STEMS_LAYER, windowController.getWindowDimensions(), terrain::groundHeightAt, SEED);
-        tree.createInRange((int) leftEdge, (int) rightEdge);
-
+        this.windowController = windowController;
+        leftScreenEdge = -windowController.getWindowDimensions().x() / 2;
+        rightScreenEdge = 3 * windowController.getWindowDimensions().x() / 2;
+        initializeGameObjects((int) leftScreenEdge, (int) rightScreenEdge);
         Vector2 initLocation = new Vector2(windowController.getWindowDimensions().x() / 2,
                 terrain.groundHeightAt(windowController.getWindowDimensions().x() / 2) - 300);
-
-
-        avatar = Avatar.create(gameObjects(), Layer.DEFAULT,
-                initLocation,
-                inputListener, imageReader);
-        avatarXCoord = avatar.getTopLeftCorner().x();
-
+        initializeAvatar(inputListener, imageReader, initLocation);
         Vector2 deltaRelative = new Vector2(windowController.getWindowDimensions().mult(0.5f).subtract(initLocation));
         setCamera(new Camera(avatar, deltaRelative,
                 windowController.getWindowDimensions(),
                 windowController.getWindowDimensions()));
+        setGameLayerCollisions();
+    }
+
+    /**
+     * the main update function for the game, overrides the update from the game manager
+     *
+     * @param deltaTime The time, in seconds, that passed since the last invocation of this method.
+     */
+    @Override
+    public void update(float deltaTime) {
+        super.update(deltaTime);
+        float movement = avatarXCoord - avatar.getTopLeftCorner().x();
+        if (Math.abs(movement) < windowController.getWindowDimensions().x() / 2)
+            return;
+
+        // Avatar moved right
+        if (movement < 0) {
+            clearObjectsInRange((int) (leftScreenEdge + movement), (int) leftScreenEdge);
+            terrain.createInRange((int) rightScreenEdge, (int) (rightScreenEdge - movement));
+            tree.createInRange((int) rightScreenEdge, (int) (rightScreenEdge - movement));
+            leftScreenEdge -= movement;
+            rightScreenEdge -= movement;
+        }
+
+        // Avatar moved left
+        else if (movement > 0) {
+            clearObjectsInRange((int) rightScreenEdge, (int) (rightScreenEdge + movement));
+            terrain.createInRange((int) (leftScreenEdge - movement), (int) (leftScreenEdge));
+            tree.createInRange((int) (leftScreenEdge - movement), (int) (leftScreenEdge));
+            leftScreenEdge -= movement;
+            rightScreenEdge -= movement;
+        }
+        avatarXCoord = avatar.getTopLeftCorner().x();
+    }
+
+    /**
+     * The function initializes the game object
+     * @param leftScreenEdge The left screen edge for the create in range function
+     * @param rightScreenEdge The right screen edge for the create in range function
+     */
+    private void initializeGameObjects(int leftScreenEdge, int rightScreenEdge) {
+        initializeSky();
+        initializeNightAndSun();
+        initializeTerrain(leftScreenEdge, rightScreenEdge);
+        initializeTree(leftScreenEdge, rightScreenEdge);
+    }
+
+    /**
+     * The function initializes the game sky
+     */
+    private void initializeSky() {
+        Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
+    }
+
+    /**
+     * The function initializes the night and sun
+     */
+    private void initializeNightAndSun() {
+        Night.create(gameObjects(), NIGHT_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
+        GameObject sun = Sun.create(gameObjects(), SUN_LAYER, windowController.getWindowDimensions(), CYCLE_LENGTH);
+        GameObject sunHalo = SunHalo.create(gameObjects(), HALO_LAYER, sun, HALO_COLOR);
+        sunHalo.addComponent(deltaTime -> sunHalo.setCenter(sun.getCenter()));
+    }
+
+    /**
+     * The function initializes the terrain
+     * @param leftScreenEdge The left screen edge for the create in range function
+     * @param rightScreenEdge The right screen edge for the create in range function
+     */
+    private void initializeTerrain(int leftScreenEdge, int rightScreenEdge) {
+        terrain = new Terrain(gameObjects(), GROUND_LAYER, UPPER_GROUND_LAYER,
+                windowController.getWindowDimensions(), SEED);
+        terrain.createInRange(leftScreenEdge, rightScreenEdge);
+    }
+
+    /**
+     * The function initializes the tree
+     * @param leftScreenEdge The left screen edge for the create in range function
+     * @param rightScreenEdge The right screen edge for the create in range function
+     */
+    private void initializeTree(int leftScreenEdge, int rightScreenEdge) {
+        tree = new Tree(gameObjects(), STEMS_LAYER, terrain::groundHeightAt, SEED);
+        tree.createInRange(leftScreenEdge, rightScreenEdge);
+    }
+
+    /**
+     * The function initializes the avatar
+     * @param inputListener Contains a single method: isKeyPressed,
+     *                      which returns whether a given key is currently pressed by the user or not.
+     * @param imageReader Contains a single method: readImage, which reads an image from disk.
+     * @param initLocation initial location
+     */
+    private void initializeAvatar(UserInputListener inputListener, ImageReader imageReader, Vector2 initLocation){
+        avatar = Avatar.create(gameObjects(), Layer.DEFAULT,
+                initLocation,
+                inputListener, imageReader);
+        avatarXCoord = avatar.getTopLeftCorner().x();
+    }
+
+    /**
+     * The function sets the game layer collisions
+     */
+    private void setGameLayerCollisions(){
         gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, STEMS_LAYER, true);
         gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, UPPER_GROUND_LAYER, true);
-        gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, GROUND_LAYER, true);
         gameObjects().layers().shouldLayersCollide(LEAVES_LAYER, UPPER_GROUND_LAYER, true);
         gameObjects().layers().shouldLayersCollide(LEAVES_LAYER, STEMS_LAYER, false);
     }
 
-    @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
-        System.out.println(avatar.getAvatarPos());
 
-        float movement = avatarXCoord - avatar.getTopLeftCorner().x();
-        // Avatar moved right
-        if (movement < 0){
-            clearObjectsInRange((int) leftEdge, (int) (leftEdge - movement));
-            terrain.createInRange((int) rightEdge, (int) (rightEdge - movement));
-            tree.createInRange((int) rightEdge, (int) (rightEdge - movement));
-            leftEdge -= movement;
-            rightEdge -= movement;
-        }
-
-        // Avatar moved left
-        else if (movement > 0){
-            clearObjectsInRange((int) (rightEdge - movement), (int) rightEdge);
-            terrain.createInRange((int) (leftEdge - movement), (int) (leftEdge));
-            tree.createInRange((int) (leftEdge - movement), (int) (leftEdge));
-            leftEdge -= movement;
-            rightEdge -= movement;
-        }
-
-        avatarXCoord = avatar.getTopLeftCorner().x();
-    }
-
-    private void clearObjectsInRange(int leftX, int rightX){
-        for (GameObject gameObject: gameObjects()){
+    /**
+     * The function clears all of the objects in the given range
+     *
+     * @param leftX  The left X coordinate fot the range
+     * @param rightX The right X coordinate fot the range
+     */
+    private void clearObjectsInRange(int leftX, int rightX) {
+        Set<GameObject> setToDelete = new HashSet<>();
+        for (GameObject gameObject : gameObjects()) {
             float gameObjectX = gameObject.getTopLeftCorner().x();
-            if (gameObjectX <= rightX && gameObjectX >= leftX){
-                int layer = getObjLayer(gameObject.getTag());
-                gameObjects().removeGameObject(gameObject, layer);
+            if (gameObjectX <= rightX && gameObjectX >= leftX) {
+                setToDelete.add(gameObject);
             }
         }
+        for (GameObject gameObject : setToDelete) {
+            int layer = getObjLayer(gameObject.getTag());
+            gameObjects().removeGameObject(gameObject, layer);
+        }
     }
 
-    private int getObjLayer(String gameObjectTag){
-        switch (gameObjectTag){
+    /**
+     * The function gets the objects layer according to its tag
+     *
+     * @param gameObjectTag The game objects tag
+     * @return The layer where it object is set
+     */
+    private int getObjLayer(String gameObjectTag) {
+        switch (gameObjectTag) {
             case GROUND_TAG:
                 return GROUND_LAYER;
+            case UPPER_GROUND_TAG:
+                return UPPER_GROUND_LAYER;
             case STEM_TAG:
                 return STEMS_LAYER;
             case LEAF_TAG:
@@ -129,10 +225,12 @@ public class PepseGameManager extends GameManager {
         }
     }
 
+    /**
+     * The main function of the program which start the game
+     *
+     * @param args The arguments from the commandline
+     */
     public static void main(String[] args) {
-
         new PepseGameManager().run();
-
     }
-
 }

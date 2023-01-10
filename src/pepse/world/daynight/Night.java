@@ -10,7 +10,9 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
-
+/**
+ * class for the Night object which extends gameObject
+ */
 public class Night extends GameObject {
 
     private static final Color NIGHT_COLOR = Color.BLACK;
@@ -32,6 +34,14 @@ public class Night extends GameObject {
         super(topLeftCorner, dimensions, renderable);
     }
 
+    /**
+     * The function creates a night object
+     * @param gameObjects The game object collection
+     * @param layer The layer in which we create the night object
+     * @param windowDimensions The games window dimensions
+     * @param cycleLength The length of the cycle
+     * @return returns the night game object
+     */
     public static GameObject create(GameObjectCollection gameObjects, int layer, Vector2 windowDimensions,
             float cycleLength) {
 
@@ -39,19 +49,16 @@ public class Night extends GameObject {
         GameObject nightObj = new GameObject(Vector2.ZERO, windowDimensions, nightRenderable);
         nightObj.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         gameObjects.addGameObject(nightObj, layer);
-
         nightObj.setTag(NIGHT_TAG);
-
-        new Transition<Float>(
+        new Transition<>(
                 nightObj, // the game object being changed
                 nightObj.renderer()::setOpaqueness, // the method to call
                 0f, // initial transition value
                 MIDNIGHT_OPACITY, // final transition value
                 Transition.CUBIC_INTERPOLATOR_FLOAT, // use a cubic interpolator
-                cycleLength / HALF_DAY , // transtion fully over half a day
+                cycleLength / HALF_DAY, // transtion fully over half a day
                 Transition.TransitionType.TRANSITION_BACK_AND_FORTH, // Choose appropriate ENUM value
                 null); // nothing further to execute upon reaching final value
-
         return nightObj;
     }
 }
