@@ -30,14 +30,52 @@ The flow of the infinite world goes as follows:
 - after understanding the new edges of the screen we did 2 things:
     1. Create the Terrain and Tree objects in the new part that didn't previously exist
     2. delete the Terrain and Tree from the part that is now longer in the frame.
-In order
+In order to make the program more efficient, we decided to create the initial screen with an extra half a screen on
+each side allowing us to create and delete object once the avatar moved at least a half a screen size in a specific
+direction, that's instead of creating and deleting game objects for each of the avatars movement.
 
 
-Implementation of the tree package:
-
+Implementation of the Tree package:
+In the Tree package we decided to implement two classes:
+1. Tree class - responsible for creating the tree (Stem and leaves), It chooses to create a Tree in a specific
+                X coordinate according to a Random function which create the tree in a Probability of 1/12.
+2. Leaf class - responsible for creating a single leaf and its logic, We implemented the following logics:
+                a. The leaf rotates in a given angle back and forth.
+                b. The leaf resizes back and forth between two given sizes.
+                c. Once the leaf falls it starts fading out until it hits the ground.
+                d. The leaf has a given time before it starts falling, once it fell it has a given time before it
+                   disappears and once it disappears there is a set time until it comes back to life.
+                The leaf class extends the Block class
+The reason we decided to implement the Tree package in that way is because the leaf class has a lot of complexity and
+we wanted to contain all of it's different methods in one class.
+The reason we decided that two classes are sufficient was because that the Tree package has two main roles in the game:
+a. To create the stems in ransom location on the board
+b. To manage the Leaf's lifecycle
+therefore we implemented two classes, one for each role.
 
 
 Design Dilemmas:
-* Using the noise generator as a
+First I would like to mention the screen dimensions, when we ran the game in the aquarium computers the screen was cut
+off, therefore we decided to create a fixed size screen that looks nice on the aquarium computer screens.
+
+* The first dilemma we encountered was if the leaf's logic should be implemented in the Tree class or we should create a
+  different class for it, our decisions was to make a different class, The reason was that the Leaf has
+  a lot of logic to it and we want to contain it in one location instead of having the leaf being a Block instance
+  and then we would have to implement all of the logic in the Tree class.
+
+* The second dilemma we encountered was whether to implement the Perlin noise algorithm in the Terrain class or create
+  a specific class for it in the utils Package, we decided to go for thr utils option because the Perlin algorithm has
+  nothing to do with the implementation of the Terrain. It is just a tool that the Terrain uses in order to create a
+  random continues terrain.
+  The relationship between the Terrain and the Perlin algorithm is composition, the Terrain holds an instance of the
+  NoiseGenerator and uses it in order to create the random Terrain.
+
+* The third dilemma we encountered was whether to create a separate class for the Tree stem, we decided to implement
+  the stem in the Tree class because all the stem represents is a number of Blocks places in a vertical way with no
+  specific logic.
 
 
+Bonus implementations:
+1. We decided to create our avatar as two different characters, one for the walking avatar and for the flying avatar
+   we chose santa claus. We thing that having two different avatar characters in the game makes the game more fun and
+   exciting.
