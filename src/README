@@ -1,0 +1,43 @@
+yitzstrum
+danielalfia
+
+
+Difference between the 2 UML diagrams:
+In the begging we designed a UML diagram from reading the exercise and understanding the relationships between the
+classes in a basic way.
+Our initial understanding was that the game objects (Tree, Terrain, Avatar) relationship to the manager would be a
+dependency relationship.
+Once we started writing the program we understood that there needs to be a Compositions relationship between the
+PepseGameManager and each of the following objects: Terrain, Avatar and Tree. The reason is because that Game must
+contain each of the above objects in order to run and the PepseGameManager is in charge of creating all of those
+instances.
+Another change we made to the UML was to add the Leaf object that extends the Block object, The leaf contains complex
+methods therefore we decided that it's best for it to be implemented in a separate class where we could contain its
+different methods.
+In addition we added the NoiseGenerator to the utils package which supplies us with the Perlin noise algorithm which
+randomly selects the height of the terrain in a continues way.
+
+
+Implementation of the infinite world:
+First thing we did was to set the camera so it follow the avatar on the screen.
+next we had to extend the Game objects so the world won't end, the objects we created were:
+- Terrain
+- Trees (Stem and Leaves)
+The flow of the infinite world goes as follows:
+- The player moves (left or right)
+- For each movement of the avatar we calculate his movement according to his original position
+- using his movement parameter we can understand the current left and right edges of the screen
+- after understanding the new edges of the screen we did 2 things:
+    1. Create the Terrain and Tree objects in the new part that didn't previously exist
+    2. delete the Terrain and Tree from the part that is now longer in the frame.
+In order
+
+
+Implementation of the tree package:
+
+
+
+Design Dilemmas:
+* Using the noise generator as a
+
+
