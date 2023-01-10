@@ -37,10 +37,15 @@ public class PepseGameManager extends GameManager {
     private static final int GROUND_GAME_OBJECTS_LAYER = LEAVES_LAYER + 1;
     private static final int NIGHT_LAYER = GROUND_GAME_OBJECTS_LAYER + 1;
     private static final int CYCLE_LENGTH = 30;
+    private static final float LEFT_EDGE_ADD_ON = -0.5f;
+    private static final float RIGHT_EDGE_ADD_ON = 1.5f;
     private static final String GROUND_TAG = "ground";
     private static final String UPPER_GROUND_TAG = "upper ground";
     private static final String STEM_TAG = "stem";
     private static final String LEAF_TAG = "leaf";
+    private static final String WINDOW_TITLE = "Pepse";
+    private static final int WINDOW_DIMENSION_X = 1800;
+    private static final int WINDOW_DIMENSION_Y = 1000;
 
     private float avatarXCoord;
     private float leftScreenEdge;
@@ -49,6 +54,15 @@ public class PepseGameManager extends GameManager {
     private Tree tree;
     private Avatar avatar;
     private WindowController windowController;
+
+    /**
+     * Constructor for the PepseGameManager class
+     * @param windowTitle The title for the game window
+     * @param windowDimensions pixel dimensions for game window height x width
+     */
+    public PepseGameManager(String windowTitle, Vector2 windowDimensions) {
+        super(windowTitle, windowDimensions);
+    }
 
     /**
      * The initialize game function overrides the function from game manager and is in charge of initializing all of
@@ -64,8 +78,8 @@ public class PepseGameManager extends GameManager {
     public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowController = windowController;
-        leftScreenEdge = -windowController.getWindowDimensions().x() / 2;
-        rightScreenEdge = 3 * windowController.getWindowDimensions().x() / 2;
+        leftScreenEdge = windowController.getWindowDimensions().x() * LEFT_EDGE_ADD_ON;
+        rightScreenEdge = windowController.getWindowDimensions().x() * RIGHT_EDGE_ADD_ON;
         initializeGameObjects((int) leftScreenEdge, (int) rightScreenEdge);
         Vector2 initLocation = new Vector2(windowController.getWindowDimensions().x() / 2,
                 terrain.groundHeightAt(windowController.getWindowDimensions().x() / 2) - 300);
@@ -231,6 +245,6 @@ public class PepseGameManager extends GameManager {
      * @param args The arguments from the commandline
      */
     public static void main(String[] args) {
-        new PepseGameManager().run();
+        new PepseGameManager(WINDOW_TITLE, new Vector2(WINDOW_DIMENSION_X, WINDOW_DIMENSION_Y)).run();
     }
 }
