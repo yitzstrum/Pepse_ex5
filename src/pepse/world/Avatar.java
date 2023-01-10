@@ -27,6 +27,7 @@ public class Avatar extends GameObject {
     private final Renderable[] runRenderables;
     private final Renderable[] waitRenderables;
     private final Renderable[] flyRenderables;
+    private int energy;
     private Status status;
     private Status lastStatus;
     private int updateFrames;
@@ -34,6 +35,10 @@ public class Avatar extends GameObject {
     private UserInputListener inputListener;
     private ImageReader imageReader;
     private int avatarEnergy;
+
+    private static final int ZERO_ENERGY = 0;
+    private static final float ENERGY_FACTOR = 0.5f;
+    private static final int MAX_ENERGY = 100;
 
     private static final int NUM_OF_RUN_RENDERABLES = 8;
 
@@ -59,6 +64,8 @@ public class Avatar extends GameObject {
     public Avatar(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable,
                   UserInputListener inputListener, ImageReader imageReader) {
         super(topLeftCorner, dimensions, renderable);
+
+        this.energy = INIT_ENERGY;
 
         this.inputListener = inputListener;
         this.imageReader = imageReader;
@@ -97,13 +104,25 @@ public class Avatar extends GameObject {
             transform().setVelocityY(JUMP_VELOCITY_Y);
 
         }
+
+        energyHandler();
         flyHandler();
         updateAvatar();
     }
 
+    private void energyHandler() {
+
+        // add energy if the avatar in reset
+        if (getVelocity().x() == ZERO_ENERGY && getVelocity().y() == 0 && energy < MAX_ENERGY) {
+            energy += ENERGY_FACTOR;
+        }
+    }
+
 
     private void flyHandler() {
-        if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && inputListener.isKeyPressed(KeyEvent.VK_SHIFT)) {
+        if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && inputListener.isKeyPressed(KeyEvent.VK_SHIFT)
+                && energy > ZERO_ENERGY) {
+            energy -= ENERGY_FACTOR;
             transform().setVelocityY(FLY_VELOCITY_Y / 2);
             status = Status.FLY;
         }
@@ -118,6 +137,7 @@ public class Avatar extends GameObject {
         }
         return 0;
     }
+
 
 
     void rendersHandler(Renderable[] renderables) {
