@@ -27,8 +27,9 @@ public class PepseGameManager extends GameManager {
     private static final int HALO_LAYER = SUN_LAYER + 1;
     private static final int SEED = 200;
     private static final int GROUND_LAYER = Layer.STATIC_OBJECTS;
-    private static final int TRUNKS_LAYER = GROUND_LAYER + 1;
-    private static final int LEAVES_LAYER = TRUNKS_LAYER + 1;
+    private static final int UPPER_GROUND_LAYER = GROUND_LAYER + 1 ;
+    private static final int STEMS_LAYER = UPPER_GROUND_LAYER + 1;
+    private static final int LEAVES_LAYER = STEMS_LAYER + 1;
     private static final int GROUND_GAME_OBJECTS_LAYER = LEAVES_LAYER + 1;
     private static final int NIGHT_LAYER = GROUND_GAME_OBJECTS_LAYER + 1;
     private static final int CYCLE_LENGTH = 30;
@@ -53,9 +54,9 @@ public class PepseGameManager extends GameManager {
         GameObject sunHalo = SunHalo.create(gameObjects(), HALO_LAYER, sun, HALO_COLOR);
         sunHalo.addComponent(deltaTime -> sunHalo.setCenter(sun.getCenter()));
         Sky.create(gameObjects(), windowController.getWindowDimensions(), Layer.BACKGROUND);
-        terrain = new Terrain(gameObjects(), Layer.STATIC_OBJECTS, windowController.getWindowDimensions(), SEED);
+        terrain = new Terrain(gameObjects(), GROUND_LAYER, UPPER_GROUND_LAYER, windowController.getWindowDimensions(), SEED);
         terrain.createInRange((int) leftEdge, (int) rightEdge);
-        tree = new Tree(gameObjects(), TRUNKS_LAYER, windowController.getWindowDimensions(), terrain::groundHeightAt, SEED);
+        tree = new Tree(gameObjects(), STEMS_LAYER, windowController.getWindowDimensions(), terrain::groundHeightAt, SEED);
         tree.createInRange((int) leftEdge, (int) rightEdge);
 
         Vector2 initLocation = new Vector2(windowController.getWindowDimensions().x() / 2,
@@ -71,10 +72,11 @@ public class PepseGameManager extends GameManager {
         setCamera(new Camera(avatar, deltaRelative,
                 windowController.getWindowDimensions(),
                 windowController.getWindowDimensions()));
-        gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, TRUNKS_LAYER, true);
+        gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, STEMS_LAYER, true);
+        gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, UPPER_GROUND_LAYER, true);
         gameObjects().layers().shouldLayersCollide(Layer.DEFAULT, GROUND_LAYER, true);
-
-
+        gameObjects().layers().shouldLayersCollide(LEAVES_LAYER, UPPER_GROUND_LAYER, true);
+        gameObjects().layers().shouldLayersCollide(LEAVES_LAYER, STEMS_LAYER, false);
     }
 
     @Override
@@ -119,11 +121,10 @@ public class PepseGameManager extends GameManager {
             case GROUND_TAG:
                 return GROUND_LAYER;
             case STEM_TAG:
-                return TRUNKS_LAYER;
+                return STEMS_LAYER;
             case LEAF_TAG:
                 return LEAVES_LAYER;
             default:
-                System.out.println(100000000);
                 return Layer.DEFAULT;
         }
     }

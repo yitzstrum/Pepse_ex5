@@ -18,8 +18,6 @@ public class    Tree {
     private static final Color LEAF_COLOR = new Color(50, 200, 30);
     private static final String STEM_TAG = "stem";
     private static final String LEAF_TAG = "leaf";
-    private static final Renderable stemRenderable = new RectangleRenderable(ColorSupplier.approximateColor(STEM_COLOR));
-    private static final Renderable leafRenderable = new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR));
     private static final int RANDOM_RANGE = 10;
     private static final int RANDOM_PARAM = 0;
     private static final int LEAF_RANDOM_RANGE = 10;
@@ -77,7 +75,9 @@ public class    Tree {
     private void createTreeStem(int x, int treeBase, int stemSize){
         int y = treeBase;
         for (int i = 0; i < stemSize; ++i){
-            GameObject stemBlock = new Block(new Vector2(x, y), stemRenderable);
+            GameObject stemBlock = new Block(
+                    new Vector2(x, y),
+                    new RectangleRenderable(ColorSupplier.approximateColor(STEM_COLOR)));
             stemBlock.setTag(STEM_TAG);
             gameObjects.addGameObject(stemBlock, layer);
             y -= Block.SIZE;
@@ -98,7 +98,10 @@ public class    Tree {
     }
 
     private void createLeaf(int x, int y){
-        GameObject leaf = new Leaf(new Vector2(x, y), new Vector2(Block.SIZE, Block.SIZE), leafRenderable);
+        GameObject leaf = new Leaf(
+                new Vector2(x, y),
+                new Vector2(Block.SIZE, Block.SIZE),
+                new RectangleRenderable(ColorSupplier.approximateColor(LEAF_COLOR)));
         leaf.setTag(LEAF_TAG);
         gameObjects.addGameObject(leaf, layer + 1);
     }

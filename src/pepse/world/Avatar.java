@@ -67,11 +67,9 @@ public class Avatar extends GameObject {
         this.updateFrames = 0;
         this.status = Status.WAIT;
         this.lastStatus = Status.DEFAULT;
-
         this.runRenderables = loadRennderAssets(RUN_RENDERABLES_PATH, NUM_OF_RUN_RENDERABLES);
         this.waitRenderables = loadRennderAssets(WAIT_RENDERABLES_PATH, NUM_OF_WAIT_RENDERABLES);
         this.flyRenderables = loadRennderAssets(FLY_RENDERABLES_PATH, NUM_OF_FLY_RENDERABLES);
-
         transform().setAccelerationY(GRAVITY);
         physics().preventIntersectionsFromDirection(Vector2.ZERO);
 
@@ -91,22 +89,14 @@ public class Avatar extends GameObject {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
-
-
-
         float xVel = 0;
         xVel += goDirectionHandler(KeyEvent.VK_LEFT, LEFT_DIRECTION);
         xVel += goDirectionHandler(KeyEvent.VK_RIGHT, RIGHT_DIRECTION);
-
         transform().setVelocityX(xVel);
-
-        if(inputListener.isKeyPressed(KeyEvent.VK_SPACE) && getVelocity().y() == 0)
-        {
+        if (inputListener.isKeyPressed(KeyEvent.VK_SPACE) && getVelocity().y() == 0) {
             transform().setVelocityY(JUMP_VELOCITY_Y);
 
         }
-
         flyHandler();
         updateAvatar();
     }
@@ -119,45 +109,35 @@ public class Avatar extends GameObject {
         }
 
     }
+
     private float goDirectionHandler(int keyEvent, boolean direction) {
         if (inputListener.isKeyPressed(keyEvent)) {
             status = Status.RUN;
             renderer().setIsFlippedHorizontally(direction);
-            return direction ? - VELOCITY_X : VELOCITY_X;
+            return direction ? -VELOCITY_X : VELOCITY_X;
         }
         return 0;
     }
 
 
-    void rendersHandler(Renderable[] renderables)
-    {
+    void rendersHandler(Renderable[] renderables) {
         Renderable img;
-        if (counter < renderables.length)
-        {
+        if (counter < renderables.length) {
             img = renderables[counter];
             renderer().setRenderable(img);
             counter++;
-        }
-        else {
+        } else {
             lastStatus = status;
             counter = 0;
             status = Status.WAIT;
         }
-
-
     }
 
     private void updateAvatar() {
-
         updateFrames++;
-
-        if ((updateFrames % RUN_ANIMATION_SPEED) != 0)
-        {
+        if ((updateFrames % RUN_ANIMATION_SPEED) != 0) {
             return;
         }
-
-        Renderable img = null;
-
         switch (status) {
             case WAIT:
                 rendersHandler(waitRenderables);
@@ -167,7 +147,6 @@ public class Avatar extends GameObject {
                 break;
             case FLY:
                 rendersHandler(flyRenderables);
-
         }
     }
 
@@ -177,19 +156,14 @@ public class Avatar extends GameObject {
     }
 
     private Renderable[] loadRennderAssets(String path, int numOfImg) {
-        Renderable [] renderables = new Renderable[numOfImg];
-
+        Renderable[] renderables = new Renderable[numOfImg];
         for (int i = 0; i < numOfImg; i++) {
             renderables[i] = imageReader.readImage(path.replace(NUM_FORMAT, String.valueOf(i)), true);
         }
-
-
         return renderables;
     }
 
     enum Status {
         WAIT, RUN, FLY, DEFAULT
     }
-
-
 }
