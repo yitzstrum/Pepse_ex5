@@ -1,20 +1,27 @@
 package pepse.util;
 
 
-
+/**
+ * Noise Generator class using the perlin algorithm
+ */
 public class NoiseGenerator {
     private double seed;
     private long default_size;
     private int[] p;
     private int[] permutation;
 
-
+    /**
+     * Constructor for the class
+     * @param seed The seed we use for the random
+     */
     public NoiseGenerator(double seed) {
         this.seed = seed;
         init();
     }
 
-
+    /**
+     * Initialize the class parameters
+     */
     private void init() {
         // Initialize the permutation array.
         this.p = new int[512];
@@ -47,30 +54,45 @@ public class NoiseGenerator {
 
     }
 
-
+    /**
+     * Setter function for the seed
+     * @param seed The seed we set
+     */
     public void setSeed(double seed) {
         this.seed = seed;
     }
 
-
+    /**
+     * Getter function for the seed
+     * @return The seed
+     */
     public double getSeed() {
         return this.seed;
     }
 
+    /**
+     * The function generates the noise
+     * @param x The X coordinate for which we calculate the noise
+     * @return The noise for X
+     */
     public double noise(double x) {
         double value = 0.0;
         double size = default_size;
         double initialSize = size;
-
         while (size >= 1) {
             value += smoothNoise((x / size), (0f / size), (0f / size)) * size;
             size /= 2.0;
         }
-
         return value / initialSize;
     }
 
-
+    /**
+     * The function calculates the smooth noise
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param z Z coordinate
+     * @return The smooth noise
+     */
     public double smoothNoise(double x, double y, double z) {
         // Offset each coordinate by the seed value
         x += this.seed;

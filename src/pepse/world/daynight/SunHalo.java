@@ -9,6 +9,9 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
+/**
+ * class for the Sun halo object which extends gameObject
+ */
 public class SunHalo extends GameObject {
 
     private static final String HALO_TAG = "halo";
@@ -27,6 +30,14 @@ public class SunHalo extends GameObject {
         super(topLeftCorner, dimensions, renderable);
     }
 
+    /**
+     * The function creates a sun halo object
+     * @param gameObjects The game object collection
+     * @param layer The layer in which we create the sun halo object
+     * @param sun The sun for which we create the halo
+     * @param color The color of the sun halo
+     * @return The sun halo game object
+     */
     public static GameObject create(GameObjectCollection gameObjects, int layer, GameObject sun,
                                     Color color) {
 
@@ -35,9 +46,6 @@ public class SunHalo extends GameObject {
         haloObj.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         haloObj.setTag(HALO_TAG);
         gameObjects.addGameObject(haloObj, layer);
-
         return haloObj;
-
     }
-
 }

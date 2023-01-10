@@ -11,6 +11,9 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
+/**
+ * class for the Sun object which extends gameObject
+ */
 public class Sun extends GameObject {
 
     private static final Color SUN_COLOR = Color.YELLOW;
@@ -33,12 +36,12 @@ public class Sun extends GameObject {
 
 
     /**
-     *
-     * @param gameObjects
-     * @param layer
-     * @param windowDimensions
-     * @param cycleLength
-     * @return
+     * The function creates a sun object
+     * @param gameObjects The game object collection
+     * @param layer The layer in which we create the sun object
+     * @param windowDimensions The games window dimensions
+     * @param cycleLength The length of the cycle
+     * @return returns the sun game object
      */
     public static GameObject create(
             GameObjectCollection gameObjects, int layer, Vector2 windowDimensions,  float cycleLength) {
@@ -48,11 +51,7 @@ public class Sun extends GameObject {
         subObj.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
         subObj.setTag(SUN_TAG);
         gameObjects.addGameObject(subObj, layer);
-
-
         float x = (float) ((4 / 2) * Math.PI);
-
-
         new Transition<>(
                 subObj, // the game object being changed
                 (angle) ->  subObj.setCenter(getSunPos(windowDimensions, angle)), // the function that changes the game object
@@ -62,11 +61,15 @@ public class Sun extends GameObject {
                 cycleLength , // transtion fully over a day
                 Transition.TransitionType.TRANSITION_LOOP, // Choose appropriate ENUM value
                 null); // nothing further to execute upon reaching final value
-
-        
         return subObj;
     }
 
+    /**
+     * The function gets the sun position
+     * @param windowDimensions The games window dimensions
+     * @param angleInSky The angle of the sun in the sky
+     * @return The sun position in  a vector form
+     */
     private static Vector2 getSunPos(Vector2 windowDimensions, float angleInSky) {
         float x = (float) ((windowDimensions.x() / 2) - (windowDimensions.y() - SUN_DIMENSION.y()) / 2 * 2 * Math.sin(angleInSky));
         float y = (float) ((windowDimensions.y() / 2) - (windowDimensions.y() - SUN_DIMENSION.y()) / 2 * Math.cos(angleInSky));
