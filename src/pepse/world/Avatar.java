@@ -201,7 +201,8 @@ public class Avatar extends GameObject {
     private Renderable[] loadRennderAssets(String path, int numOfImg) {
         Renderable[] renderables = new Renderable[numOfImg];
         for (int i = 0; i < numOfImg; i++) {
-            renderables[i] = imageReader.readImage(path.replace(NUM_FORMAT, String.valueOf(i)), true);
+            renderables[i] = imageReader.readImage(path.replace(NUM_FORMAT, String.valueOf(i)),
+                    true);
         }
         return renderables;
     }

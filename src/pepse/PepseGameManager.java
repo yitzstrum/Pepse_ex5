@@ -75,7 +75,8 @@ public class PepseGameManager extends GameManager {
      * @param windowController Contains an array of helpful, self explanatory methods concerning the window.
      */
     @Override
-    public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
+    public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener,
+                               WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowController = windowController;
         leftScreenEdge = windowController.getWindowDimensions().x() * LEFT_EDGE_ADD_ON;

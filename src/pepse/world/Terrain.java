@@ -37,7 +37,8 @@ public class Terrain {
      * @param windowDimensions The games window dimensions
      * @param seed seed for random
      */
-    public Terrain(GameObjectCollection gameObjects, int groundLayer, int upperGroundLayer, Vector2 windowDimensions, int seed){
+    public Terrain(GameObjectCollection gameObjects, int groundLayer, int upperGroundLayer, Vector2 windowDimensions,
+                   int seed){
         this.gameObjects = gameObjects;
         this.groundLayer = groundLayer;
         this.upperGroundLayer = upperGroundLayer;
