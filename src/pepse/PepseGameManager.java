@@ -159,7 +159,7 @@ public class PepseGameManager extends GameManager {
      * @param rightScreenEdge The right screen edge for the create in range function
      */
     private void initializeTerrain(int leftScreenEdge, int rightScreenEdge) {
-        terrain = new Terrain(gameObjects(), GROUND_LAYER, UPPER_GROUND_LAYER,
+        terrain = new Terrain(gameObjects(), GROUND_LAYER,
                 windowController.getWindowDimensions(), SEED);
         terrain.createInRange(leftScreenEdge, rightScreenEdge);
     }

@@ -33,15 +33,14 @@ public class Terrain {
      * Terrain constructor
      * @param gameObjects The game object collection
      * @param groundLayer The layer in which we create the ground
-     * @param upperGroundLayer The layer in which we create the upper ground
      * @param windowDimensions The games window dimensions
      * @param seed seed for random
      */
-    public Terrain(GameObjectCollection gameObjects, int groundLayer, int upperGroundLayer, Vector2 windowDimensions,
+    public Terrain(GameObjectCollection gameObjects, int groundLayer, Vector2 windowDimensions,
                    int seed){
         this.gameObjects = gameObjects;
         this.groundLayer = groundLayer;
-        this.upperGroundLayer = upperGroundLayer;
+        this.upperGroundLayer = groundLayer + 1;
         groundHeightAtX0 = windowDimensions.y() * X0_HEIGHT_RATIO;
         noiseGenerator = new NoiseGenerator(seed);
         scalingParameter = windowDimensions.y() * SCALE_RATIO;

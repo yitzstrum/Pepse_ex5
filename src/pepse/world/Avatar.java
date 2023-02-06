@@ -3,7 +3,6 @@ package pepse.world;
 import danogl.GameObject;
 import danogl.collisions.Collision;
 import danogl.collisions.GameObjectCollection;
-import danogl.components.GameObjectPhysics;
 import danogl.gui.ImageReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.rendering.Renderable;
@@ -30,9 +29,9 @@ public class Avatar extends GameObject {
     private static final float ENERGY_FACTOR = 0.5f;
     private static final int MAX_ENERGY = 100;
     private static final int NUM_OF_RUN_RENDERABLES = 8;
-    private static final String RUN_RENDERABLES_PATH = "src/AvatarAssets/Run/Run<num>.png";
-    private static final String WAIT_RENDERABLES_PATH = "src/AvatarAssets/Wait/Idle<num>.png";
-    private static final String FLY_RENDERABLES_PATH = "src/AvatarAssets/Fly/Jump<num>.png";
+    private static final String RUN_RENDERABLES_PATH = "src/assets/Run/Run<num>.png";
+    private static final String WAIT_RENDERABLES_PATH = "src/assets/Wait/Idle<num>.png";
+    private static final String FLY_RENDERABLES_PATH = "src/assets/Fly/Jump<num>.png";
     private static final String NUM_FORMAT = "<num>";
     private static final boolean LEFT_DIRECTION = true;
     private static final boolean RIGHT_DIRECTION = false;
@@ -95,7 +94,7 @@ public class Avatar extends GameObject {
     public static Avatar create(GameObjectCollection gameObjects, int layer, Vector2 topLeftCorner,
                                 UserInputListener inputListener, ImageReader imageReader) {
         Avatar avatar = new Avatar(topLeftCorner, AVATAR_DIMENSIONS, imageReader.readImage("src" +
-                "/AvatarAssets/Wait/Idle1.png", true), inputListener, imageReader);
+                "/assets/Wait/Idle1.png", true), inputListener, imageReader);
         gameObjects.addGameObject(avatar, layer);
         return avatar;
     }
