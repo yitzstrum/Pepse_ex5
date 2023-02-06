@@ -29,9 +29,9 @@ public class Avatar extends GameObject {
     private static final float ENERGY_FACTOR = 0.5f;
     private static final int MAX_ENERGY = 100;
     private static final int NUM_OF_RUN_RENDERABLES = 8;
-    private static final String RUN_RENDERABLES_PATH = "src/assets/Run/Run<num>.png";
-    private static final String WAIT_RENDERABLES_PATH = "src/assets/Wait/Idle<num>.png";
-    private static final String FLY_RENDERABLES_PATH = "src/assets/Fly/Jump<num>.png";
+    private static final String RUN_RENDERABLES_PATH = "assets/Run/Run<num>.png";
+    private static final String WAIT_RENDERABLES_PATH = "assets/Wait/Idle<num>.png";
+    private static final String FLY_RENDERABLES_PATH = "assets/Fly/Jump<num>.png";
     private static final String NUM_FORMAT = "<num>";
     private static final boolean LEFT_DIRECTION = true;
     private static final boolean RIGHT_DIRECTION = false;
